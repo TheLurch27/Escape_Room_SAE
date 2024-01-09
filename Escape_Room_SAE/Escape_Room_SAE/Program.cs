@@ -1,13 +1,11 @@
 ﻿namespace Escape_Room_SAE
-
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Game myGame = new Game();
-            myGame.Run();
+            Game newGame = new Game();
+            newGame.Run();
         }
-
     }
 }

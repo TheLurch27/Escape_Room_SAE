@@ -6,42 +6,61 @@ using System.Threading.Tasks;
 
 namespace Escape_Room_SAE
 {
-    class Game
+    internal class Game
     {
-        const int groundSize = 20;
-        const int groundYPos = 10;
-        const ConsoleColor groundColor = ConsoleColor.Red;
-        const ConsoleColor defaultGroundColor = ConsoleColor.Black; 
+        private enum EMapTiles
+        {
+            free = -1,
+            wall = 0,
+        }
+        private const int MAP_SIZE = 10;
+        private static int[,] map;
 
-        const char playerVisuals = 'P';
-        int playerXPos, playerYPos;
+        private static int playerX;
+        private static int playerY;
 
         public void Run() // Neue "Main"
         {
-            // Boden visuell anzeigen
-            // Spieler visuell anzeigen
-            // Spieler bewegen mit USer Input
+            WelcomeMessage();
             DrawMap();
             DrawPlayer();
 
             Console.ReadLine();
         }
 
+        public void WelcomeMessage()
+        {
+            Console.WriteLine(" ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄    ▄▄▄▄▄▄   ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄   ▄▄ \r\n█       █       █       █       █       █       █  █   ▄  █ █       █       █  █▄█  █\r\n█    ▄▄▄█  ▄▄▄▄▄█       █   ▄   █    ▄  █    ▄▄▄█  █  █ █ █ █   ▄   █   ▄   █       █\r\n█   █▄▄▄█ █▄▄▄▄▄█     ▄▄█  █▄█  █   █▄█ █   █▄▄▄   █   █▄▄█▄█  █ █  █  █ █  █       █\r\n█    ▄▄▄█▄▄▄▄▄  █    █  █       █    ▄▄▄█    ▄▄▄█  █    ▄▄  █  █▄█  █  █▄█  █       █\r\n█   █▄▄▄ ▄▄▄▄▄█ █    █▄▄█   ▄   █   █   █   █▄▄▄   █   █  █ █       █       █ ██▄██ █\r\n█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█▄▄█ █▄▄█▄▄▄█   █▄▄▄▄▄▄▄█  █▄▄▄█  █▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█▄█   █▄█\r\n");
+            Console.WriteLine("Hello and Welcome to my Escape Room");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
         public void DrawMap()
         {
-            Console.SetCursorPosition(0, groundYPos);
-            Console.BackgroundColor = groundColor;
-            for (int i = 0; i < groundSize; i++)
+            map = new int[MAP_SIZE, MAP_SIZE];
+            for (int y = 0; y < MAP_SIZE; y++)
             {
-                Console.Write(" ");
+                for (int x = 0; x < MAP_SIZE; x++)
+                {
+                    if(y == 0 || x == 0 || y == MAP_SIZE -1 || x == MAP_SIZE -1)
+                    {
+                        map[x, y] = (int)EMapTiles.wall;
+                    }
+                    else
+                    {
+                        map[x, y] = (int)EMapTiles.free;
+                    }
+                }
             }
-            Console.BackgroundColor = defaultGroundColor;
+
+            playerX = MAP_SIZE / 2;
+            playerY = MAP_SIZE / 2;
         }
 
         public void DrawPlayer()
         {
-            Console.SetCursorPosition(playerXPos, groundYPos - 1);
-            Console.Write(playerVisuals);
+
         }
     }
 }
