@@ -10,7 +10,11 @@ namespace Escape_Room_SAE
     {
         const int groundSize = 20;
         const int groundYPos = 10;
-        const ConsoleColor groundColor = ConsoleColor.Green;
+        const ConsoleColor groundColor = ConsoleColor.Red;
+        const ConsoleColor defaultGroundColor = ConsoleColor.Black; 
+
+        const char playerVisuals = 'P';
+        int playerXPos, playerYPos;
 
         public void Run() // Neue "Main"
         {
@@ -18,6 +22,7 @@ namespace Escape_Room_SAE
             // Spieler visuell anzeigen
             // Spieler bewegen mit USer Input
             DrawMap();
+            DrawPlayer();
 
             Console.ReadLine();
         }
@@ -26,10 +31,17 @@ namespace Escape_Room_SAE
         {
             Console.SetCursorPosition(0, groundYPos);
             Console.BackgroundColor = groundColor;
-            for (int i = 0; 1 < groundSize; i++)
+            for (int i = 0; i < groundSize; i++)
             {
                 Console.Write(" ");
             }
+            Console.BackgroundColor = defaultGroundColor;
+        }
+
+        public void DrawPlayer()
+        {
+            Console.SetCursorPosition(playerXPos, groundYPos - 1);
+            Console.Write(playerVisuals);
         }
     }
 }
