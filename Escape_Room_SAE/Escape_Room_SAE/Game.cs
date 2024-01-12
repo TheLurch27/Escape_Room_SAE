@@ -118,7 +118,6 @@ namespace Escape_Room_SAE
                 ConsoleKeyInfo keyInput = Console.ReadKey();
 
                 HandleUserInput(keyInput);
-                TryPassThroughWall(); // Hier aufrufen, nachdem der Spieler versucht hat, sich zu bewegen.
                 CheckCharacterPosition();
             }
         }
@@ -176,10 +175,9 @@ namespace Escape_Room_SAE
                     break;
             }
 
-            TryPassThroughWall(); // Versuche, durch die Wand zu gehen, bevor die Position überprüft wird.
-            CheckCharacterPosition(); // Überprüfe und korrigiere die Spielerposition.
+            CheckCharacterPosition();
 
-            HandleKeyCollection(); // Füge die Überprüfung für Schlüssel-Einsammlung hinzu.
+            HandleKeyCollection();
         }
 
         private void CheckCharacterPosition()
@@ -205,7 +203,7 @@ namespace Escape_Room_SAE
         }
 
         private void PrintMapAndCharacter()
-        // Ahhhh hier haben wir das Printen der Map und Characters
+        // Ahhhh hier haben wir das Printen der Map und des Characters
         {
             for (int y = 0; y < MAP_SIZE; y++)
             {
@@ -241,21 +239,23 @@ namespace Escape_Room_SAE
                 keyY = rnd.Next(1, MAP_SIZE - 1);
             } while (map[keyX, keyY] != (int)EMapTiles.floor);
 
-            map[keyX, keyY] = (int)EMapTiles.key; // Markiere die Position des Schlüssels auf der Karte.
+            map[keyX, keyY] = (int)EMapTiles.key;
         }
 
         private void HandleKeyCollection()
+        // Hier wird dafür gesorgt das der Schlüssel auch eine Funktion bekommt - und zwar das Löschen sobald der Character ihn aufsammelt.
         {
             if (map[playerX, playerY] == (int)EMapTiles.key)
             {
                 isKeyCollected = true;
-                map[playerX, playerY] = (int)EMapTiles.floor; // Lösche den Schlüssel von der Karte.
+                map[playerX, playerY] = (int)EMapTiles.floor;
 
-                OpenDoor(); // Neu hinzugefügte Methode zum Öffnen der Tür.
+                OpenDoor();
             }
         }
 
         private void DrawDoor()
+        // Ein Escape Room ohne Tür? Ist wie Brot ohne Nutella...
         {
             System.Random rndDoor = new Random();
 
@@ -272,6 +272,7 @@ namespace Escape_Room_SAE
         }
 
         private void OpenDoor()
+        // Offen sollte sie am ende auch sein... ansonsten GAME OVER!
         {
             for (int x = 0; x < MAP_SIZE; x++)
             {
@@ -285,55 +286,5 @@ namespace Escape_Room_SAE
                 }
             }
         }
-
-        private void CheckExitGame()
-        {
-            if (map[playerX, playerY] == (int)EMapTiles.openDoor && isKeyCollected)
-            {
-                Console.WriteLine("Glückwunsch! Du hast das Spiel gewonnen!");
-                isRunning = false;
-                return;
-            }
-
-            if (isKeyCollected && map[playerX, playerY] == (int)EMapTiles.closedDoor)
-            {
-                Console.WriteLine("Du hast die Tür geöffnet, betrete sie, um das Spiel zu beenden!");
-                // Überprüfe, ob der Weg zur Tür durch eine Wand blockiert ist, und umgehe die Wand.
-                TryPassThroughWall();
-            }
-        }
-
-        private void TryPassThroughWall()
-        {
-            int potentialX = playerX;
-            int potentialY = playerY;
-
-            // Überprüfe, ob der Spieler auf eine Wand zugeht und versuche, die Wand zu umgehen.
-            if (playerX < MAP_SIZE - 2 && map[playerX + 1, playerY] == (int)EMapTiles.wall)
-            {
-                potentialX = playerX + 1;
-            }
-            else if (playerX > 1 && map[playerX - 1, playerY] == (int)EMapTiles.wall)
-            {
-                potentialX = playerX - 1;
-            }
-
-            if (playerY < MAP_SIZE - 2 && map[playerX, playerY + 1] == (int)EMapTiles.wall)
-            {
-                potentialY = playerY + 1;
-            }
-            else if (playerY > 1 && map[playerX, playerY - 1] == (int)EMapTiles.wall)
-            {
-                potentialY = playerY - 1;
-            }
-
-            // Überprüfe, ob die potenzielle Position durch eine Wand blockiert ist.
-            if (map[potentialX, potentialY] != (int)EMapTiles.wall)
-            {
-                playerX = potentialX;
-                playerY = potentialY;
-            }
-        }
-
     }
 }
