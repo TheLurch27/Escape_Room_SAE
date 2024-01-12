@@ -76,7 +76,7 @@ namespace Escape_Room_SAE
         }
 
         private void MapSize()
-        // Es kommt nicht auf die Größe an... Hab ich gehört! - Hier wir der Spieler aufgefordert die Map Größe zu bestimmen, ja auch TryParse ist mit drin ^^ Doofheit der Menschen und so.
+        // Es kommt nicht auf die Größe an... Hab ich gehört! - Hier wir der Spieler aufgefordert die Map Größe zu bestimmen, ja auch TryParse ist mit drin ^^ weil Doofheit der Menschen und so.
         {
             do
             {
