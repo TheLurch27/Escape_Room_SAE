@@ -178,33 +178,41 @@ namespace Escape_Room_SAE
             CheckCharacterPosition();
 
             HandleKeyCollection();
+
+            if (isKeyCollected && map[playerX, playerY] == (int)EMapTiles.openDoor)
+            {
+                Console.Clear();
+                Console.WriteLine("Congratulations! You have escaped the room!");
+                isRunning = false;
+            }
         }
 
         private void CheckCharacterPosition()
         // Player Position... Check! Hier wird geschaut das der Charackter nicht ausbüchsen kann.
         {
-            if (playerX <= 0)
+            if (playerX < 0)
             {
-                playerX = 1;
+                playerX = 0;
             }
-            else if (playerX >= MAP_SIZE - 1)
+            else if (playerX >= MAP_SIZE)
             {
-                playerX = MAP_SIZE - 2;
+                playerX = MAP_SIZE - 1;
             }
 
-            if (playerY <= 0)
+            if (playerY < 0)
             {
-                playerY = 1;
+                playerY = 0;
             }
-            else if (playerY >= MAP_SIZE - 1)
+            else if (playerY >= MAP_SIZE)
             {
-                playerY = MAP_SIZE - 2;
+                playerY = MAP_SIZE - 1;
             }
         }
 
         private void PrintMapAndCharacter()
         // Ahhhh hier haben wir das Printen der Map und des Characters
         {
+            Console.BackgroundColor = ConsoleColor.Yellow;
             for (int y = 0; y < MAP_SIZE; y++)
             {
                 for (int x = 0; x < MAP_SIZE; x++)
@@ -216,9 +224,15 @@ namespace Escape_Room_SAE
                     else
                     {
                         int mapValue = map[x, y];
-                        Console.Write(mapTileChar[mapValue + 1]);
+                        if (isKeyCollected && mapValue == (int)EMapTiles.closedDoor)
+                        {
+                            Console.Write(mapTileChar[(int)EMapTiles.floor + 1]);
+                        }
+                        else
+                        {
+                            Console.Write(mapTileChar[mapValue + 1]);
+                        }
                     }
-                    Console.Write("");
                 }
 
                 Console.WriteLine();
@@ -264,9 +278,15 @@ namespace Escape_Room_SAE
 
             do
             {
-                doorX = rndDoor.Next(0, MAP_SIZE - 2);
-                doorY = rndDoor.Next(0, MAP_SIZE - 2);
-            } while (map[doorX, doorY] != (int)EMapTiles.wall);
+                doorX = rndDoor.Next(1, MAP_SIZE - 2);
+                doorY = rndDoor.Next(1, MAP_SIZE - 2);
+
+                // Überprüfen Sie, ob die Tür in einer der Ecken erscheint, und setzen Sie die Position zurück, wenn ja
+                if ((doorX == 1 && doorY == 1) || (doorX == 1 && doorY == MAP_SIZE - 2) || (doorX == MAP_SIZE - 2 && doorY == 1) || (doorX == MAP_SIZE - 2 && doorY == MAP_SIZE - 2))
+                {
+                    doorX = doorY = -1;
+                }
+            } while (doorX == -1 || map[doorX, doorY] != (int)EMapTiles.wall);
 
             map[doorX, doorY] = (int)EMapTiles.closedDoor;
         }
