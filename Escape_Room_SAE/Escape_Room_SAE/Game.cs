@@ -17,14 +17,15 @@ namespace Escape_Room_SAE
         private bool isValidInput = false;
         private bool isRunning = true;
         private bool isKeyCollected = false;
+        private bool hasExitedDoor = false;
 
         // Variablen für den Character
         private static int playerX;
         private static int playerY;
         private static string playerChar = ":)";
 
-        // Mehr Variablen bzw ein ENUM für die Map
         private enum EMapTiles
+        // Mehr Variablen bzw ein ENUM für die Map
         {
             floor = -1,
             wall,
@@ -33,8 +34,8 @@ namespace Escape_Room_SAE
             closedDoor
         }
 
-        // Noch mehr Variablen für die Map. Mensch das hört nicht auf....
         private static string[] mapTileChar = new string[]
+        // Noch mehr Variablen für die Map. Mensch das hört nicht auf....
         {
             "  ",
             "██",
@@ -76,7 +77,7 @@ namespace Escape_Room_SAE
         }
 
         private void MapSize()
-        // Es kommt nicht auf die Größe an... Hab ich gehört! - Hier wir der Spieler aufgefordert die Map Größe zu bestimmen, ja auch TryParse ist mit drin ^^ weil Doofheit der Menschen und so.
+        // Es kommt nicht auf die Größe an... Hab ich gehört! - Hier wird der Spieler aufgefordert die Map Größe zu bestimmen, ja auch TryParse ist mit drin ^^ weil Doofheit der Menschen und so.
         {
             do
             {
@@ -112,7 +113,6 @@ namespace Escape_Room_SAE
 
             while (isRunning)
             {
-                Console.Clear();
                 PrintMapAndCharacter();
 
                 ConsoleKeyInfo keyInput = Console.ReadKey();
@@ -179,10 +179,10 @@ namespace Escape_Room_SAE
 
             HandleKeyCollection();
 
-            if (isKeyCollected && map[playerX, playerY] == (int)EMapTiles.openDoor)
+            if (hasExitedDoor)
             {
                 Console.Clear();
-                Console.WriteLine("Congratulations! You have escaped the room!");
+                Console.WriteLine("Congratulations! You have escaped the room! ╰(°▽°)╯");
                 isRunning = false;
             }
         }
@@ -190,29 +190,38 @@ namespace Escape_Room_SAE
         private void CheckCharacterPosition()
         // Player Position... Check! Hier wird geschaut das der Charackter nicht ausbüchsen kann.
         {
-            if (playerX < 0)
+            CheckDoor();
+
+
+            if (playerX <= 0)
             {
-                playerX = 0;
+                playerX = 1;
             }
-            else if (playerX >= MAP_SIZE)
+            else if (playerX >= MAP_SIZE - 1)
             {
-                playerX = MAP_SIZE - 1;
+                playerX = MAP_SIZE - 2;
             }
 
-            if (playerY < 0)
+            if (playerY <= 0)
             {
-                playerY = 0;
+                playerY = 1;
             }
-            else if (playerY >= MAP_SIZE)
+            else if (playerY >= MAP_SIZE - 1)
             {
-                playerY = MAP_SIZE - 1;
+                playerY = MAP_SIZE - 2;
             }
+        }
+
+        private void CheckDoor()
+        {
+            hasExitedDoor = isKeyCollected && map[playerX, playerY] == (int)EMapTiles.openDoor;
         }
 
         private void PrintMapAndCharacter()
         // Ahhhh hier haben wir das Printen der Map und des Characters
         {
-            Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.BackgroundColor = ConsoleColor.Blue;
+            Console.Clear();
             for (int y = 0; y < MAP_SIZE; y++)
             {
                 for (int x = 0; x < MAP_SIZE; x++)
@@ -278,14 +287,15 @@ namespace Escape_Room_SAE
 
             do
             {
-                doorX = rndDoor.Next(1, MAP_SIZE - 2);
-                doorY = rndDoor.Next(1, MAP_SIZE - 2);
+                doorX = rndDoor.Next(0, MAP_SIZE);
+                doorY = rndDoor.Next(0, MAP_SIZE);
 
-                // Überprüfen Sie, ob die Tür in einer der Ecken erscheint, und setzen Sie die Position zurück, wenn ja
+                // Kurz zur Erklärung: Hier wird überprüft ob die Tür in einer der Ecken erscheint und platziert sie um, wenn es so wäre.
                 if ((doorX == 1 && doorY == 1) || (doorX == 1 && doorY == MAP_SIZE - 2) || (doorX == MAP_SIZE - 2 && doorY == 1) || (doorX == MAP_SIZE - 2 && doorY == MAP_SIZE - 2))
                 {
                     doorX = doorY = -1;
                 }
+
             } while (doorX == -1 || map[doorX, doorY] != (int)EMapTiles.wall);
 
             map[doorX, doorY] = (int)EMapTiles.closedDoor;
