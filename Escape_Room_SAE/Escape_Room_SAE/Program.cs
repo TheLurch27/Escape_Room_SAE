@@ -4,8 +4,9 @@
     {
         static void Main(string[] args)
         {
-            Game newGame = new Game();
-            newGame.Run();
+            Text.WelcomeMessage();
+            Text.InstructionMessage();
+            UserInput.MapSize();
         }
     }
 }
